@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager, PermissionsMixin
 from django.utils import timezone
 from django.contrib.auth.models import UserManager, PermissionsMixin
+from django.db.models.signals import post_save
 
 
 class UserManager(BaseUserManager):
@@ -51,5 +52,13 @@ class User(AbstractUser, PermissionsMixin):
 class Profile(models.Model):
     user = models.OneToOneField('User', on_delete=models.CASCADE)
     nickname = models.CharField(default='닉네임', max_length=50, null=True, blank=True)
+    member_type = models.CharField(default='임신부', max_length=50, null=True, blank=True)
     pregnancy_date = models.IntegerField(null=True,blank=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+def user_join(sender, **kwargs):
+    if kwargs['created']:
+        user = kwargs['instance']
+        Profile.objects.create(user=user)
+
+post_save.connect(user_join, sender=User)
