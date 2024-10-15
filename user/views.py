@@ -297,7 +297,7 @@ class ProfileView(APIView):
                             },
                         "userAnalysisResult": [{"id": 1,
                                     "user_id": 2,
-                                    "image": "행복한 마무리를 위한 추천 플레이리스트입니다!",
+                                    "image": "image/url",
                                     "elapsed_time": 30,
                                     "created_at": "2024-09-26T21:10:05.460483+09:00",
                                     "IngredientResult": [
