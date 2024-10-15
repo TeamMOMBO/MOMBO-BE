@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'user',
     'ingredient',
+    'pregnancy',
     'drf_spectacular'
 ]
 
