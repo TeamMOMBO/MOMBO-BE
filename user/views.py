@@ -23,7 +23,7 @@ import requests
 
 dotenv.load_dotenv()
 
-CALLBACK_URI = 'http://3.38.183.235:8000/user/login/kakao/callback/'
+CALLBACK_URI = 'https://api.mombo.site/user/login/kakao/callback/'
 KAKAO_REST_API_KEY = os.environ['KAKAO_REST_API_KEY']
 STATE = os.environ['STATE']
 
@@ -136,9 +136,9 @@ class Login(APIView):
                     "refresh": str(refresh)
                 }
                 
-                return HttpResponseRedirect(f"http://localhost:3000/login/redirection?isMember=true&accessToken={token.access}&refreshToken={token.refresh}")
+                return HttpResponseRedirect(f"https://www.mombo.site/login/redirection?isMember=true&accessToken={token.access}&refreshToken={token.refresh}")
             except User.DoesNotExist:
-                return HttpResponseRedirect(f"http://localhost:3000/login/redirection?isMember=false&email={email}")
+                return HttpResponseRedirect(f"https://www.mombo.site/login/redirection?isMember=false&email={email}")
             
 
 class Join(APIView):
