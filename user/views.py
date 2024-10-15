@@ -152,6 +152,7 @@ class Join(APIView):
             fields={
                 "email": serializers.CharField(),
                 "nickname": serializers.CharField(),
+                "member_type": serializers.CharField(),
                 "pregnancy_date": serializers.IntegerField(),
             },
         ),
@@ -160,6 +161,7 @@ class Join(APIView):
             fields={
                 "email": serializers.CharField(),
                 "nickname": serializers.CharField(),
+                "member_type": serializers.CharField(),
                 "pregnancy_date": serializers.IntegerField(),
             },
         ),
@@ -191,7 +193,6 @@ class Join(APIView):
         ],
     )
     def post(self, request):
-        
         try:
             user = User.objects.create(email=request.data.get('email'))
             user.set_unusable_password()
@@ -204,14 +205,14 @@ class Join(APIView):
             nickname = request.data.get('nickname')
             member_type = request.data.get('type')
             pregnancy_date = request.data.get('pregnancy_date')
-                
+
             profile_data = {
                 "user": user.id,
                 "nickname": nickname,
                 "member_type": member_type,
                 "pregnancy_date": pregnancy_date,
             }
-            
+
             if not (nickname and member_type and pregnancy_date):
                 user.delete()
                 return Response({"error" : "프로필 정보를 입력해주세요."}, status=status.HTTP_400_BAD_REQUEST)
@@ -222,11 +223,11 @@ class Join(APIView):
                 pf_serializer.save()
             else:
                 return Response(pf_serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-            
+
             token = RefreshToken.for_user(user)
             access_token = str(token.access_token)
             refresh_token = str(token)
-            
+
             message = {
                 "message": "회원가입 성공",
                 "user" : pf_serializer.data,
