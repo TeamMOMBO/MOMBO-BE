@@ -23,7 +23,7 @@ import requests
 
 dotenv.load_dotenv()
 
-CALLBACK_URI = 'http://localhost:8000/user/login/kakao/callback/'
+CALLBACK_URI = 'http://3.38.183.235:8000/user/login/kakao/callback/'
 KAKAO_REST_API_KEY = os.environ['KAKAO_REST_API_KEY']
 STATE = os.environ['STATE']
 
