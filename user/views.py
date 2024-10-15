@@ -47,15 +47,6 @@ class Login(APIView):
                 value={
                     "status": 200,
                     "res_data": {
-                        "user": {
-                            "id": 2,
-                            "name": "테스트",
-                            "about": "테스트 데이터입니다.",
-                            "genre": "J-POP,힙합,K-POP",
-                            "email": "test@gmail.com",
-                            "rep_playlist": None,
-                            "is_following": False
-                        },
                         "message": "Login success",
                         "token": {
                             "access": "eyJhbGci123213iIqwesInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAxMjcwMDQwLCJpYXQiOjE3MDEyNjI4NDAsImp0aSI6IjAyNjU5NjkwZmM3YjQ3Njg4YzkxZDUxOThiMDNlMjgyIiwidXNlcl9pZCI6Nn0.TjEFfq-K3Q7Ol31roq7MybH7iJ_r9dW0cbUt9cG9Gac",
@@ -152,12 +143,12 @@ class Login(APIView):
 
 class Join(APIView):
     @extend_schema(
-        summary="로그인 API",
-        description="로그인 API에 대한 설명 입니다.",
+        summary="회원가입 API",
+        description="회원가입 API에 대한 설명 입니다.",
         parameters=[],
-        tags=["Login"],
+        tags=["User"],
         responses=inline_serializer(
-            name="Login_API",
+            name="Join_API",
             fields={
                 "email": serializers.CharField(),
                 "nickname": serializers.CharField(),
@@ -165,7 +156,7 @@ class Join(APIView):
             },
         ),
         request=inline_serializer(
-            name="Login_API",
+            name="Join_API",
             fields={
                 "email": serializers.CharField(),
                 "nickname": serializers.CharField(),
@@ -178,7 +169,7 @@ class Join(APIView):
                 name="200_OK",
                 value={
                     "status": 200,
-                    "res_data": {"message": "Register success"},
+                    "res_data": {"message": "회원가입 성공"},
                 }
             ),
             OpenApiExample(
@@ -299,30 +290,21 @@ class ProfileView(APIView):
                     "res_data": {
                         "profile": {
                             "id": 2,
-                            "name": "테스트",
-                            "about": "안녕하세요!",
-                            "genre": "J-POP,힙합,K-POP",
                             "email": "test@gmail.com",
-                            "rep_playlist": None,
-                            "is_following": None,
-                            "image": "profile/basic.png"
+                            "nickname": "테스트",
+                            "member_type": "테스트",
+                            "pregnancy_date": 0,
                             },
-                        "playlist": [{"id": 1,
-                                    "title": "행복한 마무리를 위한 추천 플레이리스트입니다!",
-                                    "content": "이 위의 목록은 K-POP 장르에 속하는 행복한 노래들로 당신의 하루를 마무리하는 데 도움이 될 것입니다. 멜로디와 가사 모두 경쾌하고 에너지 넘치며, 행복한 기분을 더욱 향상시킬 것입니다. 편안한 마음으로 즐겨보세요!",
-                                    "thumbnail": "karlo/b4346658a3e711eeae840700a75bb434",
-                                    "genre": "K-POP",
-                                    "is_active": True,
-                                    "created_at": "2023-12-26T21:10:05.460483+09:00",
-                                    "updated_at": "2023-12-26T21:10:05.460504+09:00",
-                                    "is_public": True,
-                                    "writer": 2,
-                                    "music": [
-                                        15,
-                                        18,
-                                        116,
-                                        189,
-                                        190
+                        "userAnalysisResult": [{"id": 1,
+                                    "user_id": 2,
+                                    "image": "행복한 마무리를 위한 추천 플레이리스트입니다!",
+                                    "elapsed_time": 30,
+                                    "created_at": "2024-09-26T21:10:05.460483+09:00",
+                                    "IngredientResult": [
+                                        {'name' : 'T1','level': 1,'notes':'부작용'},
+                                        {'name' : 'T2','level': 2,'notes':'부작용'},
+                                        {'name' : 'T3','level': 1,'notes':'부작용'},
+                                        {'name' : 'T4','level': 1,'notes':'부작용'},
                                     ]}],
                     },
                 }
