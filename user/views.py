@@ -295,7 +295,7 @@ class ProfileView(APIView):
                             "id": 2,
                             "email": "test@gmail.com",
                             "nickname": "테스트",
-                            "member_type": "테스트",
+                            "user_type": "테스트",
                             "pregnancy_date": 0,
                             },
                         "userAnalysisResult": [{"id": 1,
@@ -428,7 +428,3 @@ class Withdrawal(APIView):
         user.save()
             
         return Response({"message": "회원탈퇴 되었습니다."}, status=status.HTTP_200_OK)
-
-
-
-
