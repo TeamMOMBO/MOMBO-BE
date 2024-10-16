@@ -136,9 +136,11 @@ class Login(APIView):
                     "refresh": str(refresh)
                 }
                 
-                return HttpResponseRedirect(f"https://www.mombo.site/login/redirection?isMember=true&accessToken={token.access}&refreshToken={token.refresh}")
+                return HttpResponseRedirect(f"http://localhost:3000/login/redirection?isMember=true&accessToken={token.access}&refreshToken={token.refresh}")
+                # return HttpResponseRedirect(f"https://www.mombo.site/login/redirection?isMember=true&accessToken={token.access}&refreshToken={token.refresh}")
             except User.DoesNotExist:
-                return HttpResponseRedirect(f"https://www.mombo.site/login/redirection?isMember=false&email={email}")
+                return HttpResponseRedirect(f"http://localhost:3000/login/redirection?isMember=false&email={email}")
+                # return HttpResponseRedirect(f"https://www.mombo.site/login/redirection?isMember=false&email={email}")
             
 
 class Join(APIView):
