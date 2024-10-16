@@ -5,16 +5,16 @@ User = get_user_model()
 
 
 class FAQ(models.Model):
-    question = models.CharField(null=True, blank=True)
-    real_question = models.CharField(null=True, blank=True)
-    answer = models.CharField(null=True, blank=True)
+    question = models.CharField(max_length=50,null=True, blank=True)
+    real_question = models.CharField(max_length=50,null=True, blank=True)
+    answer = models.CharField(max_length=50,null=True, blank=True)
     views = models.IntegerField(null=True, blank=True)
 
 
 class Information(models.Model):
-    step = models.CharField(null=True, blank=True)
+    step = models.CharField(max_length=50,null=True, blank=True)
     Week = models.IntegerField(null=True, blank=True)
-    fetus = models.CharField(null=True, blank=True)
-    maternity = models.CharField(null=True, blank=True)
-    summary = models.CharField(null=True, blank=True)
+    fetus = models.CharField(max_length=50,null=True, blank=True)
+    maternity = models.CharField(max_length=50,null=True, blank=True)
+    summary = models.CharField(max_length=50,null=True, blank=True)
 

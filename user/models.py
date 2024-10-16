@@ -52,7 +52,7 @@ class User(AbstractUser, PermissionsMixin):
 class Profile(models.Model):
     user = models.OneToOneField('User', on_delete=models.CASCADE)
     nickname = models.CharField(default='닉네임', max_length=50, null=True, blank=True)
-    member_type = models.CharField(default='임신부', max_length=50, null=True, blank=True)
+    user_type = models.CharField(default='임신부', max_length=50, null=True, blank=True)
     pregnancy_date = models.IntegerField(null=True,blank=True)
     updated_at = models.DateTimeField(auto_now=True)
     

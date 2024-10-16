@@ -154,7 +154,7 @@ class Join(APIView):
             fields={
                 "email": serializers.CharField(),
                 "nickname": serializers.CharField(),
-                "member_type": serializers.CharField(),
+                "user_type": serializers.CharField(),
                 "pregnancy_date": serializers.IntegerField(),
             },
         ),
@@ -163,7 +163,7 @@ class Join(APIView):
             fields={
                 "email": serializers.CharField(),
                 "nickname": serializers.CharField(),
-                "member_type": serializers.CharField(),
+                "user_type": serializers.CharField(),
                 "pregnancy_date": serializers.IntegerField(),
             },
         ),
@@ -205,17 +205,17 @@ class Join(APIView):
             profile = Profile.objects.get(user=user)
             
             nickname = request.data.get('nickname')
-            member_type = request.data.get('type')
+            user_type = request.data.get('user_type')
             pregnancy_date = request.data.get('pregnancy_date')
 
             profile_data = {
                 "user": user.id,
                 "nickname": nickname,
-                "member_type": member_type,
+                "user_type": user_type,
                 "pregnancy_date": pregnancy_date,
             }
 
-            if not (nickname and member_type and pregnancy_date):
+            if not (nickname and user_type and pregnancy_date):
                 user.delete()
                 return Response({"error" : "프로필 정보를 입력해주세요."}, status=status.HTTP_400_BAD_REQUEST)
 
