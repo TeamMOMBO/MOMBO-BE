@@ -154,8 +154,8 @@ class Join(APIView):
             fields={
                 "email": serializers.CharField(),
                 "nickname": serializers.CharField(),
-                "user_type": serializers.CharField(),
-                "pregnancy_date": serializers.IntegerField(),
+                "userType": serializers.CharField(),
+                "pregnancyDate": serializers.IntegerField(),
             },
         ),
         request=inline_serializer(
@@ -163,8 +163,8 @@ class Join(APIView):
             fields={
                 "email": serializers.CharField(),
                 "nickname": serializers.CharField(),
-                "user_type": serializers.CharField(),
-                "pregnancy_date": serializers.IntegerField(),
+                "userType": serializers.CharField(),
+                "pregnancyDate": serializers.IntegerField(),
             },
         ),
         examples=[
@@ -205,19 +205,15 @@ class Join(APIView):
             profile = Profile.objects.get(user=user)
             
             nickname = request.data.get('nickname')
-            user_type = request.data.get('user_type')
-            pregnancy_date = request.data.get('pregnancy_date')
+            userType = request.data.get('userType')
+            pregnancyDate = request.data.get('pregnancyDate')
 
             profile_data = {
                 "user": user.id,
                 "nickname": nickname,
-                "user_type": user_type,
-                "pregnancy_date": pregnancy_date,
+                "userType": userType,
+                "pregnancyDate": pregnancyDate,
             }
-
-            if not (nickname and user_type and pregnancy_date):
-                user.delete()
-                return Response({"error" : "프로필 정보를 입력해주세요."}, status=status.HTTP_400_BAD_REQUEST)
 
             pf_serializer = ProfileSerializer(profile, profile_data)
 
