@@ -5,9 +5,13 @@ User = get_user_model()
 
 
 class Ingredient(models.Model):
-    name = models.CharField(max_length=50,null=True, blank=True)
-    level = models.IntegerField(null=True, blank=True)
-    note = models.TextField(null=True,blank=True)
+    categoryId = models.CharField(max_length=50,null=True, blank=True)
+    effectType = models.CharField(max_length=50,null=True, blank=True)
+    ingredientKr = models.CharField(max_length=50,null=True, blank=True)
+    ingredient = models.CharField(max_length=50,null=True, blank=True)
+    level = models.CharField(max_length=50,null=True, blank=True)
+    reason = models.TextField(null=True,blank=True)
+    notes = models.TextField(null=True,blank=True)
 
 
 class UserAnalysisResult(models.Model):
