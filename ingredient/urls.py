@@ -1,8 +1,8 @@
 from django.urls import path
-# from .views import Login, Join, Withdrawal, Logout, ProfileView, ProfileEditView
+from .views import IngredientAnalysis
 
 app_name = 'ingredient'
 
 urlpatterns = [
-    # path('login/', Login.as_view(), name='login'),
+    path('analysis/', IngredientAnalysis.as_view(), name='ingredient'),
 ]
