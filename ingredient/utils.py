@@ -27,7 +27,8 @@ def resize_image_width(image_file, target_width):
 def natural_language_processing(text):
     
     # API 엔드포인트
-    url = 'http://3.38.183.235:8001/correct_ingredients/'
+    # url = 'http://3.38.183.235:8001/correct_ingredients/'
+    url = 'http://127.0.0.1:8001/correct_ingredients/'
 
     # JSON 데이터
     data = {
@@ -71,7 +72,9 @@ def draw_boxes_on_image(image_path, ocr_result):
         infer_text = field.get('inferText', '')
         extracted_texts.append(infer_text)  # 텍스트 추가
 
-    # print(extracted_texts)
-    # image.show()
+    # 메모리 버퍼에 리사이즈된 이미지 저장
+    img_byte_arr = io.BytesIO()
+    image.save(img_byte_arr, format=image.format)
+    img_byte_arr.seek(0)
     
-    return image, extracted_texts
+    return img_byte_arr, extracted_texts
