@@ -1,10 +1,11 @@
 from rest_framework import serializers
 from .models import Ingredient, UserAnalysisResult, IngredientResult
 
+
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
-        fields = ['id','name', 'level', 'note']
+        fields = '__all__'
 
 
 class UserAnalysisResultSerializer(serializers.ModelSerializer):
