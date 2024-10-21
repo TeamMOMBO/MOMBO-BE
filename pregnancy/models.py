@@ -5,9 +5,9 @@ User = get_user_model()
 
 
 class FAQ(models.Model):
-    question = models.CharField(max_length=50,null=True, blank=True)
-    real_question = models.CharField(max_length=50,null=True, blank=True)
-    answer = models.CharField(max_length=50,null=True, blank=True)
+    question = models.CharField(max_length=250,null=True, blank=True)
+    real_question = models.CharField(max_length=250,null=True, blank=True)
+    answer = models.CharField(max_length=250,null=True, blank=True)
     views = models.IntegerField(null=True, blank=True)
 
 
