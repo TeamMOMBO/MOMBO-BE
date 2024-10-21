@@ -1,4 +1,4 @@
-from drf_spectacular.utils import OpenApiExample, extend_schema, inline_serializer
+from drf_spectacular.utils import OpenApiExample, extend_schema, inline_serializer, OpenApiParameter
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.views import APIView
@@ -28,13 +28,100 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 # Create your views here.
+class Home(APIView):
+    # permission_classes = [IsAuthenticated]
+    @extend_schema(
+        summary="메인페이지 API",
+        description="메인페이지 API에 대한 설명 입니다.",
+        parameters=[],
+        tags=["Ingredient"],
+        responses=UserAnalysisResultSerializer,
+        examples=[
+            OpenApiExample(
+                response_only=True,
+                name="200_OK",
+                value={
+                    "analysisImage" : "image/AWS_S3_URL", # S3 이미지 URL
+                }
+            ),
+            OpenApiExample(
+                response_only=True,
+                name="400_BAD_REQUEST",
+                value={
+                    "message": "400_BAD_REQUEST",
+                },
+            ),
+            OpenApiExample(
+                response_only=True,
+                name="401_UNAUTHORIZED",
+                value={
+                    "message": "401_UNAUTHORIZED",
+                },
+            ),
+        ],
+    )
+    def get(self, request):
+        
+        try:
+            user = request.user
+        except:
+            Response(message, status=status.HTTP_401_UNAUTHORIZED)
+
+        profile = Profile.objects.get(user=user)
+        serializer = ProfileSerializer(profile)  # 프로필 직렬화
+        
+        message = {
+            "user": serializer.data,
+            "weekInformation": {
+                'week': 4,
+                'fetus': "아기 정보",
+                'maternity': "엄마 정보",
+                'summary': "요약 내용",
+            },
+            "faqs": [{
+                'question': "faq 질문 1입니다.",
+                'real_question': "실제 질문 1",
+                'answer': "실제 답변 1",
+                'views': 1,
+            },{
+                'question': "faq 질문 2입니다.",
+                'real_question': "실제 질문 2",
+                'answer': "실제 답변 2",
+                'views': 2,
+            },{
+                'question': "faq 질문 3입니다.",
+                'real_question': "실제 질문 3",
+                'answer': "실제 답변 3",
+                'views': 3,
+            },{
+                'question': "faq 질문 4입니다.",
+                'real_question': "실제 질문 4",
+                'answer': "실제 답변 4",
+                'views': 4,
+            },{
+                'question': "faq 질문 5입니다.",
+                'real_question': "실제 질문 5",
+                'answer': "실제 답변 5",
+                'views': 5,
+            }]
+        }
+
+        return Response(message, status=status.HTTP_200_OK)
+
 
 class IngredientAnalysis(APIView):
     # permission_classes = [IsAuthenticated]
     @extend_schema(
         summary="성분분석 API",
         description="성분분석 API에 대한 설명 입니다.",
-        parameters=[],
+        parameters=[OpenApiParameter(
+            name='Content-Type',
+            location=OpenApiParameter.HEADER,
+            description="Content type for the request, typically 'multipart/form-data' when sending an image.",
+            required=True,
+            type=str,
+            default='multipart/form-data'
+        ),],
         tags=["Ingredient"],
         responses=UserAnalysisResultSerializer,
         request=inline_serializer(
@@ -89,7 +176,7 @@ class IngredientAnalysis(APIView):
         ],
     )
     def post(self, request):
-        
+
         try:
             user = request.user
         except:
