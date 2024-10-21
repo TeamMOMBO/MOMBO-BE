@@ -88,8 +88,7 @@ class IngredientAnalysis(APIView):
         serializer = ProfileSerializer(profile)  # 프로필 직렬화
         
         req_img = request.FILES['image']
-        
-        resize_image = resize_image_width(req_img, 400)  # 가로를 400px로 줄이기
+        resize_image = resize_image_width(req_img, 1024)
         
         ocr = OCR(resize_image)
         ocr_result = ocr.scanText()
@@ -117,7 +116,7 @@ class IngredientAnalysis(APIView):
                 match = Ingredient.objects.get(ingredientKr__exact=term)
                 matched_ingredients.append({
                     'id': match.id,
-                    'ingredientKr': match.ingredientKr,
+                    'name': match.ingredientKr,
                     'reason': match.reason,
                     'level': match.level,
                 })
