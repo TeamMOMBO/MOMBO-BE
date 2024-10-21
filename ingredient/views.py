@@ -79,11 +79,22 @@ class IngredientAnalysis(APIView):
                     "message": "400_BAD_REQUEST",
                 },
             ),
+            OpenApiExample(
+                response_only=True,
+                name="401_UNAUTHORIZED",
+                value={
+                    "message": "401_UNAUTHORIZED",
+                },
+            ),
         ],
     )
     def post(self, request):
-        # user = request.user
-        user = User.objects.get(pk=1)
+        
+        try:
+            user = request.user
+        except:
+            Response(message, status=status.HTTP_401_UNAUTHORIZED)
+
         profile = Profile.objects.get(user=user)
         serializer = ProfileSerializer(profile)  # 프로필 직렬화
         
