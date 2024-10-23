@@ -194,6 +194,7 @@ class IngredientAnalysis(APIView):
         
         img, text = draw_boxes_on_image(resize_image, ocr_result)
         nlp_result = natural_language_processing(text)
+        nlp_set = list(set(nlp_result))
         
         user_analysis_result = UserAnalysisResult.objects.create(
             user_id=user,
@@ -210,7 +211,7 @@ class IngredientAnalysis(APIView):
         matched_ingredients = []
         level_counts = {"1등급": 0, "2등급": 0}
         
-        for term in nlp_result:
+        for term in nlp_set:
             try:
                 match = Ingredient.objects.get(ingredientKr__exact=term)
                 matched_ingredients.append({
