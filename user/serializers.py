@@ -21,4 +21,4 @@ class ProfileSerializer(serializers.ModelSerializer):
     email = serializers.CharField(source='user.email', read_only=True)
     class Meta:
         model = Profile
-        fields = ['id','nickname', 'userType', 'pregnancyDate', 'email']
+        fields = ['id','nickname', 'userType', 'pregnancyDate', 'pregnancyWeek', 'email']

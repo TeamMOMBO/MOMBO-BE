@@ -49,13 +49,15 @@ class User(AbstractUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
+
 class Profile(models.Model):
     user = models.OneToOneField('User', on_delete=models.CASCADE)
     nickname = models.CharField(default='닉네임', max_length=50, null=True, blank=True)
     userType = models.CharField(default='임신부', max_length=50, null=True, blank=True)
-    pregnancyDate = models.IntegerField(null=True,blank=True)
+    pregnancyWeek = models.IntegerField(null=True,blank=True)
+    pregnancyDate = models.DateTimeField(null=True,blank=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
 def user_join(sender, **kwargs):
     if kwargs['created']:
         user = kwargs['instance']

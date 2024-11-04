@@ -27,6 +27,7 @@ CALLBACK_URI = 'https://api.mombo.site/user/login/kakao/callback/'
 KAKAO_REST_API_KEY = os.environ['KAKAO_REST_API_KEY']
 STATE = os.environ['STATE']
 
+
 class Login(APIView):
     @extend_schema(
         summary="카카오 로그인 API",

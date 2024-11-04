@@ -12,7 +12,7 @@ class UserAnalysisResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserAnalysisResult
         fields = ['id','user_id', 'image', 'elapsed_time', 'created_at']
-        
+
 
 class IngredientResultSerializer(serializers.ModelSerializer):
     class Meta:

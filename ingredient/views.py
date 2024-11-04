@@ -27,7 +27,7 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-# Create your views here.
+
 class Home(APIView):
     # permission_classes = [IsAuthenticated]
     @extend_schema(
@@ -63,13 +63,14 @@ class Home(APIView):
     def get(self, request):
         
         try:
-            user = request.user
+            # user = request.user
+            user = User.objects.get(id=1)
         except:
             Response(message, status=status.HTTP_401_UNAUTHORIZED)
 
         profile = Profile.objects.get(user=user)
-        serializer = ProfileSerializer(profile)  # 프로필 직렬화
-        
+        serializer = ProfileSerializer(profile) # 프로필 직렬화
+
         message = {
             "user": serializer.data,
             "weekInformation": {
@@ -93,16 +94,6 @@ class Home(APIView):
                 'real_question': "실제 질문 3",
                 'answer': "실제 답변 3",
                 'views': 3,
-            },{
-                'question': "faq 질문 4입니다.",
-                'real_question': "실제 질문 4",
-                'answer': "실제 답변 4",
-                'views': 4,
-            },{
-                'question': "faq 질문 5입니다.",
-                'real_question': "실제 질문 5",
-                'answer': "실제 답변 5",
-                'views': 5,
             }]
         }
 
@@ -254,8 +245,8 @@ class IngredientAnalysis(APIView):
         }
 
         return Response(message, status=status.HTTP_200_OK)
-    
-    
+
+
 class IngredientUploadAPIView(APIView):
     parser_classes = (MultiPartParser, FormParser)
     def post(self, request, *args, **kwargs):
