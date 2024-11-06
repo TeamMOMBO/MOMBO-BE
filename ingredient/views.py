@@ -4,12 +4,9 @@ from rest_framework import serializers
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.parsers import MultiPartParser, FormParser
-from json.decoder import JSONDecodeError
 from .serializers import IngredientSerializer, UserAnalysisResultSerializer, IngredientResultSerializer
-from django.db.models import Q
 from .models import Ingredient, UserAnalysisResult, IngredientResult
 from .imgUpload import S3ImgUploader
 from .ocr import OCR
@@ -17,87 +14,10 @@ from .utils import draw_boxes_on_image, natural_language_processing, resize_imag
 from user.serializers import ProfileSerializer
 from user.models import Profile
 import pandas as pd
-import dotenv
-import os
-import requests
-
-import time
 
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
-
-
-class Home(APIView):
-    # permission_classes = [IsAuthenticated]
-    @extend_schema(
-        summary="메인페이지 API",
-        description="메인페이지 API에 대한 설명 입니다.",
-        parameters=[],
-        tags=["Ingredient"],
-        responses=UserAnalysisResultSerializer,
-        examples=[
-            OpenApiExample(
-                response_only=True,
-                name="200_OK",
-                value={
-                    "analysisImage" : "image/AWS_S3_URL", # S3 이미지 URL
-                }
-            ),
-            OpenApiExample(
-                response_only=True,
-                name="400_BAD_REQUEST",
-                value={
-                    "message": "400_BAD_REQUEST",
-                },
-            ),
-            OpenApiExample(
-                response_only=True,
-                name="401_UNAUTHORIZED",
-                value={
-                    "message": "401_UNAUTHORIZED",
-                },
-            ),
-        ],
-    )
-    def get(self, request):
-        
-        try:
-            # user = request.user
-            user = User.objects.get(id=1)
-        except:
-            Response(message, status=status.HTTP_401_UNAUTHORIZED)
-
-        profile = Profile.objects.get(user=user)
-        serializer = ProfileSerializer(profile) # 프로필 직렬화
-
-        message = {
-            "user": serializer.data,
-            "weekInformation": {
-                'week': 4,
-                'fetus': "아기 정보",
-                'maternity': "엄마 정보",
-                'summary': "요약 내용",
-            },
-            "faqs": [{
-                'question': "faq 질문 1입니다.",
-                'real_question': "실제 질문 1",
-                'answer': "실제 답변 1",
-                'views': 1,
-            },{
-                'question': "faq 질문 2입니다.",
-                'real_question': "실제 질문 2",
-                'answer': "실제 답변 2",
-                'views': 2,
-            },{
-                'question': "faq 질문 3입니다.",
-                'real_question': "실제 질문 3",
-                'answer': "실제 답변 3",
-                'views': 3,
-            }]
-        }
-
-        return Response(message, status=status.HTTP_200_OK)
 
 
 class IngredientAnalysis(APIView):
