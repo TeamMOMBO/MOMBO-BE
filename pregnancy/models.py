@@ -13,7 +13,7 @@ class FAQ(models.Model):
 
 class Information(models.Model):
     step = models.CharField(max_length=50,null=True, blank=True)
-    Week = models.IntegerField(null=True, blank=True)
+    week = models.IntegerField(null=True, blank=True)
     fetus = models.CharField(max_length=50,null=True, blank=True)
     maternity = models.CharField(max_length=50,null=True, blank=True)
     summary = models.CharField(max_length=50,null=True, blank=True)
