@@ -29,7 +29,7 @@ class Home(APIView):
         summary="메인페이지 API",
         description="메인페이지 API에 대한 설명 입니다.",
         parameters=[],
-        tags=["Ingredient"],
+        tags=["Home"],
         responses=InformationSerializer,
         examples=[
             OpenApiExample(
