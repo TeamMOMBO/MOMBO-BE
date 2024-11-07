@@ -125,12 +125,8 @@ class IngredientAnalysis(APIView):
         for term in nlp_set:
             try:
                 match = Ingredient.objects.get(ingredientKr__exact=term)
-                matched_ingredients.append({
-                    'id': match.id,
-                    'name': match.ingredientKr,
-                    'reason': match.reason,
-                    'level': match.level,
-                })
+                match_data_serializer = IngredientSerializer(match)
+                matched_ingredients.append(match_data_serializer.data)
                 
                 if match.level in level_counts:
                     level_counts[match.level] += 1
