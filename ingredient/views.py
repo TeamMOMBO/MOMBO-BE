@@ -23,68 +23,70 @@ User = get_user_model()
 class IngredientAnalysis(APIView):
     # permission_classes = [IsAuthenticated]
     @extend_schema(
-        summary="성분분석 API",
-        description="성분분석 API에 대한 설명 입니다.",
-        parameters=[OpenApiParameter(
+    summary="성분분석 API",
+    description="성분분석 API에 대한 설명입니다. 이 API는 이미지를 업로드하여 성분을 분석합니다.",
+    parameters=[
+        OpenApiParameter(
             name='Content-Type',
             location=OpenApiParameter.HEADER,
-            description="Content type for the request, typically 'multipart/form-data' when sending an image.",
+            description="요청의 Content Type, 일반적으로 이미지를 전송할 때는 'multipart/form-data'를 사용합니다.",
             required=True,
             type=str,
             default='multipart/form-data'
-        ),],
-        tags=["Ingredient"],
-        responses=UserAnalysisResultSerializer,
-        request=inline_serializer(
-            name="Ingredient_API",
-            fields={
-                "image": serializers.ImageField(),
+        ),
+    ],
+    tags=["Ingredient"],
+    responses=UserAnalysisResultSerializer,
+    request=inline_serializer(
+        name="Ingredient_API",
+        fields={
+            "image": serializers.FileField(required=True),  # 필수로 설정
+        },
+    ),
+    examples=[
+        OpenApiExample(
+            response_only=True,
+            name="200_OK",
+            value={
+                "riskLevel": "high",  # low - middle - high 3단계로 구성
+                "user": {"userNo": 0, 'email': 'test@email.com'},  # 유저 정보
+                "analysisImage": "image/AWS_S3_URL",  # S3 이미지 URL
+                "riskIngredientCount": {
+                    'total': 8,
+                    '1단계': 4,
+                    '2단계': 1,
+                },
+                "ingredientAnalysis": [{
+                    'id': 0,
+                    'name': '아세클로페낙',
+                    'level': '2단계',
+                    'reason': '''임부에 대한 안전성 미확립.
+                    임신 말기에 투여시 태아의 동맥관조기폐쇄 가능성.
+                    동물실험에서 비스테로이드성 소염진통제는 난산발생빈도 증가, 분만지연, 태아 생존율 감소 보고.
+                    임신 약 20주 이후 비스테로이드성 소염제의 사용은 태아의 신기능 이상을 일으켜 양수 과소증 유발 가능 및 경우에 따라 신생아 신장애 발생 가능'''
+                }, {
+                    'id': 1,
+                    'name': '3´-데옥시-3´-플루오로티미딘(18F)',
+                    'level': '2단계',
+                    'reason': '임부에 대한 안전성 미확립.'
+                }]
+            }
+        ),
+        OpenApiExample(
+            response_only=True,
+            name="400_BAD_REQUEST",
+            value={
+                "message": "400_BAD_REQUEST",
             },
         ),
-        examples=[
-            OpenApiExample(
-                response_only=True,
-                name="200_OK",
-                value={
-                    "riskLevel": "high", # low - middle - high 3단계로 구성
-                    "user" : {"userNo": 0,'email': 'test@email.com'}, # 유저 정보
-                    "analysisImage" : "image/AWS_S3_URL", # S3 이미지 URL
-                    "riskIngredientCount": {
-                        'total': 8,
-                        '1단계':4,
-                        '2단계':1,
-                        },
-                    "ingredientAnalysis": [{
-                        'id':0,
-                        'name':'아세클로페낙',
-                        'level':'2단계',
-                        'reason':'''임부에 대한 안전성 미확립.
-                        임신 말기에 투여시 태아의 동맥관조기폐쇄 가능성.
-                        동물실험에서 비스테로이드성 소염진통제는 난산발생빈도 증가, 분만지연, 태아 생존율 감소 보고.
-                        임신 약 20주 이후 비스테로이드성 소염제의 사용은 태아의 신기능 이상을 일으켜 양수 과소증 유발 가능 및 경우에 따라 신생아 신장애 발생 가능'''
-                    },{
-                        'id':1,
-                        'name':'3´-데옥시-3´-플루오로티미딘(18F)',
-                        'level':'2단계',
-                        'reason':'임부에 대한 안전성 미확립.'
-                    }]
-                }
-            ),
-            OpenApiExample(
-                response_only=True,
-                name="400_BAD_REQUEST",
-                value={
-                    "message": "400_BAD_REQUEST",
-                },
-            ),
-            OpenApiExample(
-                response_only=True,
-                name="401_UNAUTHORIZED",
-                value={
-                    "message": "401_UNAUTHORIZED",
-                },
-            ),
-        ],
+        OpenApiExample(
+            response_only=True,
+            name="401_UNAUTHORIZED",
+            value={
+                "message": "401_UNAUTHORIZED",
+            },
+        ),
+    ],
     )
     def post(self, request):
 
@@ -165,6 +167,7 @@ class IngredientAnalysis(APIView):
 
 class IngredientUploadAPIView(APIView):
     parser_classes = (MultiPartParser, FormParser)
+    @extend_schema(exclude=True)
     def post(self, request, *args, **kwargs):
         file = request.FILES.get('file')
 
