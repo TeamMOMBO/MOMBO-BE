@@ -17,6 +17,7 @@ from json.decoder import JSONDecodeError
 from .serializers import UserSerializer, ProfileSerializer
 from django.core.mail import EmailMessage
 from .models import Profile, User
+from .utils import set_to_next_monday
 import dotenv
 import os
 import requests
@@ -211,7 +212,7 @@ class Join(APIView):
                 "user": user.id,
                 "nickname": nickname,
                 "userType": userType,
-                "pregnancyDate": pregnancyDate,
+                "pregnancyDate": set_to_next_monday(pregnancyDate),
             }
 
             pf_serializer = ProfileSerializer(profile, profile_data)
