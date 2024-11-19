@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.db.models import Max, Q
-
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import FAQ, Information
 from .serializers import InformationSerializer, FAQSerializer
 from .utils import weeks_since
@@ -24,7 +24,7 @@ User = get_user_model()
 # Create your views here.
 
 class Home(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     @extend_schema(
         summary="메인페이지 API",
         description="메인페이지 API에 대한 설명 입니다.",
@@ -96,8 +96,8 @@ class Home(APIView):
     def get(self, request):
         
         try:
-            # user = request.user
-            user = User.objects.get(id=1)
+            user = request.user
+            # user = User.objects.get(id=1)
         except:
             Response({'message':'401_UNAUTHORIZED'}, status=status.HTTP_401_UNAUTHORIZED)
 

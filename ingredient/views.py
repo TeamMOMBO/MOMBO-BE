@@ -21,7 +21,7 @@ User = get_user_model()
 
 
 class IngredientAnalysis(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     @extend_schema(
     summary="성분분석 API",
     description="성분분석 API에 대한 설명입니다. 이 API는 이미지를 업로드하여 성분을 분석합니다.",
@@ -91,8 +91,8 @@ class IngredientAnalysis(APIView):
     def post(self, request):
 
         try:
-            # user = request.user
-            user = User.objects.get(id=1)
+            user = request.user
+            # user = User.objects.get(id=1)
         except:
             Response(message, status=status.HTTP_401_UNAUTHORIZED)
 
