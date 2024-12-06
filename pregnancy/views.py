@@ -106,7 +106,13 @@ class Home(APIView):
         profileSerializer = ProfileSerializer(profile) # 프로필 직렬화
         
         if profileSerializer.data['pregnancyDate']:
-            weekInformation = Information.objects.get(week=weeks_since(profileSerializer.data['pregnancyDate']))
+            
+            pregnancyWeek = weeks_since(profileSerializer.data['pregnancyDate'])
+            
+            if pregnancyWeek < 3:
+                pregnancyWeek = 3
+                
+            weekInformation = Information.objects.get(week=pregnancyWeek)
         else:
             random_number = random.randint(3, 40)
             weekInformation = Information.objects.get(week=random_number)
