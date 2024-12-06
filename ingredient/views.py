@@ -35,7 +35,7 @@ class Dictionary(APIView):
             OpenApiParameter(name='sort', description='정렬 방법', required=True, type=str),
             OpenApiParameter(name='page', description='페이지 번호 (정수 값)', required=False, type=int),
         ],
-        tags=["Search"],
+        tags=["Ingredient"],
         responses={
             200: OpenApiResponse(
                 response=IngredientSerializer,
@@ -89,14 +89,15 @@ class Dictionary(APIView):
         paginator = IngredientPagination()
         paginated_ingredients = paginator.paginate_queryset(ingredients, request)
 
-        # Serializer 적용
         ingredients_serializer = IngredientSerializer(paginated_ingredients, many=True).data
+        maxPage = (ingredients.count() + paginator.page_size - 1) // paginator.page_size
 
         response_data = {
             "ingredients": ingredients_serializer,
             "count": ingredients.count(),  # 총 항목 수
             "page": page,
             "page_size": paginator.page_size,
+            "maxPage": maxPage,
         }
 
         return paginator.get_paginated_response(response_data)
