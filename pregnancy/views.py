@@ -96,10 +96,12 @@ class Home(APIView):
     def get(self, request):
         
         try:
-            # user = request.user
-            user = User.objects.get(id=request.user)
+            user = request.user
+            # user = User.objects.get(id=request.user)
+            
+            return Response(user, status=status.HTTP_200_OK)
         except:
-            Response({'message':'401_UNAUTHORIZED'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'message':'401_UNAUTHORIZED'}, status=status.HTTP_401_UNAUTHORIZED)
 
         # 프로필 가져오기
         profile = Profile.objects.get(user=user)
