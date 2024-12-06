@@ -96,13 +96,13 @@ class Home(APIView):
     def get(self, request):
         
         try:
-            user = request.user
-            # user = User.objects.get(id=1)
+            # user = request.user
+            user = User.objects.get(id=request.user)
         except:
             Response({'message':'401_UNAUTHORIZED'}, status=status.HTTP_401_UNAUTHORIZED)
 
         # 프로필 가져오기
-        profile = Profile.objects.get(user=user.id)
+        profile = Profile.objects.get(user=user)
         profileSerializer = ProfileSerializer(profile) # 프로필 직렬화
 
         # 주차별 정보 가져오기 / pregnancyDate로 주차 계산
