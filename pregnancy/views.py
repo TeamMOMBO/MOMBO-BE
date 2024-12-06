@@ -1,5 +1,6 @@
 from drf_spectacular.utils import OpenApiExample, extend_schema, inline_serializer, OpenApiParameter, OpenApiResponse
 from django.shortcuts import get_object_or_404
+from django.forms.models import model_to_dict
 from rest_framework import serializers
 from rest_framework.views import APIView
 from rest_framework import status
@@ -97,9 +98,10 @@ class Home(APIView):
         
         try:
             user = request.user
+            user_dict = model_to_dict(user)
             # user = User.objects.get(id=request.user)
             
-            return Response(user, status=status.HTTP_200_OK)
+            return Response(user_dict, status=status.HTTP_200_OK)
         except:
             return Response({'message':'401_UNAUTHORIZED'}, status=status.HTTP_401_UNAUTHORIZED)
 
