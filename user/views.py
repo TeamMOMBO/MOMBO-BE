@@ -207,13 +207,15 @@ class Join(APIView):
             nickname = request.data.get('nickname')
             userType = request.data.get('userType')
             pregnancyDate = request.data.get('pregnancyDate')
-
+            
             profile_data = {
                 "user": user.id,
                 "nickname": nickname,
                 "userType": userType,
-                "pregnancyDate": set_to_next_monday(pregnancyDate),
             }
+            
+            if pregnancyDate != 0:
+                profile_data["pregnancyDate"] = set_to_next_monday(pregnancyDate)
 
             pf_serializer = ProfileSerializer(profile, profile_data)
 
@@ -265,6 +267,7 @@ class Logout(APIView):
         refresh_token.blacklist()
         logout(request)
         return Response({"message":"로그아웃 성공"},status=status.HTTP_200_OK)
+
 
 # 프로필 조회
 class ProfileView(APIView):
