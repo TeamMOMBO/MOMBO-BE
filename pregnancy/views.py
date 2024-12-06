@@ -107,7 +107,7 @@ class Home(APIView):
         profileSerializer = ProfileSerializer(profile) # 프로필 직렬화
         
             
-        return Response(profileSerializer, status=status.HTTP_200_OK)
+        return Response(profileSerializer.data, status=status.HTTP_200_OK)
 
         # 주차별 정보 가져오기 / pregnancyDate로 주차 계산
         weekInformation = Information.objects.get(week=weeks_since(profileSerializer.data['pregnancyDate']))
