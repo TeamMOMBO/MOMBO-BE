@@ -382,9 +382,12 @@ class ProfileEditView(APIView):
     )
     def put(self, request):
         profile = request.user.profile
-        serializer = ProfileSerializer(profile, data=request.data)
+        
+        # pregnancyDate가 0일 경우 None (null)로 설정
+        if request.data.get('pregnancyDate') == 0:
+            request.data['pregnancyDate'] = None
 
-        # 주차정보 모름일 때 , pregnancyDate null로 변경
+        serializer = ProfileSerializer(profile, data=request.data)
         
         if serializer.is_valid():
             serializer.save()
