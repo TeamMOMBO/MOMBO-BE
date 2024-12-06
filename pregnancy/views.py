@@ -108,7 +108,8 @@ class Home(APIView):
         if profileSerializer.data['pregnancyDate']:
             weekInformation = Information.objects.get(week=weeks_since(profileSerializer.data['pregnancyDate']))
         else:
-            weekInformation = Information.objects.get(week=8)
+            random_number = random.randint(3, 40)
+            weekInformation = Information.objects.get(week=random_number)
             
         weekInformationSerializer = InformationSerializer(weekInformation)
 
@@ -229,6 +230,7 @@ class Search(APIView):
             }
 
             return Response(response_data, status=status.HTTP_200_OK)
+
 
 class FAQUploadAPIView(APIView):
     parser_classes = (MultiPartParser, FormParser)
