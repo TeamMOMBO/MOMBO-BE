@@ -98,20 +98,19 @@ class Home(APIView):
         
         try:
             user = request.user
-            
         except:
             return Response({'message':'401_UNAUTHORIZED'}, status=status.HTTP_401_UNAUTHORIZED)
 
         # 프로필 가져오기
         profile = Profile.objects.get(user=user)
         profileSerializer = ProfileSerializer(profile) # 프로필 직렬화
-        
             
-        return Response(profileSerializer.data, status=status.HTTP_200_OK)
 
         # 주차별 정보 가져오기 / pregnancyDate로 주차 계산
         weekInformation = Information.objects.get(week=weeks_since(profileSerializer.data['pregnancyDate']))
         weekInformationSerializer = InformationSerializer(weekInformation)
+        
+        return Response(weekInformationSerializer.data, status=status.HTTP_200_OK)
 
         # 모든 FAQ 가져와서 랜덤 3개 추출
         max_id = FAQ.objects.all().aggregate(max_id=Max("id"))['max_id'] 
