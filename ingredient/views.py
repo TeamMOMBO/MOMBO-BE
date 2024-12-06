@@ -79,7 +79,7 @@ class Dictionary(APIView):
 
         # 정렬 기준에 따른 QuerySet 처리
         if sort == 'name':
-            ingredients = Ingredient.objects.all().order_by('-ingredientKr')  # ingredientKr 기준 내림차순
+            ingredients = Ingredient.objects.all().order_by('ingredientKr')  # ingredientKr 기준 오름차순
         elif sort == 'level':
             ingredients = Ingredient.objects.all().order_by('-level')  # level 기준 내림차순
         else:
