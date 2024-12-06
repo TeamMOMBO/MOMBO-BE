@@ -11,13 +11,12 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
 from rest_framework.permissions import IsAuthenticated
-from json.decoder import JSONDecodeError
 from .serializers import UserSerializer, ProfileSerializer
-from django.core.mail import EmailMessage
 from .models import Profile, User
 from .utils import set_to_next_monday
+from ingredient.models import Ingredient, UserAnalysisResult, IngredientResult
+from ingredient.serializers import IngredientSerializer, UserAnalysisResultSerializer, IngredientResultSerializer
 import dotenv
 import os
 import requests
@@ -141,7 +140,7 @@ class Login(APIView):
             except User.DoesNotExist:
                 return HttpResponseRedirect(f"http://localhost:3000/login/redirection?isMember=false&email={email}")
                 # return HttpResponseRedirect(f"https://www.mombo.site/login/redirection?isMember=false&email={email}")
-            
+
 
 class Join(APIView):
     @extend_schema(
@@ -303,12 +302,7 @@ class ProfileView(APIView):
                                     "image": "image/url",
                                     "elapsed_time": 30,
                                     "created_at": "2024-09-26T21:10:05.460483+09:00",
-                                    "IngredientResult": [
-                                        {'name' : 'T1','level': 1,'notes':'부작용'},
-                                        {'name' : 'T2','level': 2,'notes':'부작용'},
-                                        {'name' : 'T3','level': 1,'notes':'부작용'},
-                                        {'name' : 'T4','level': 1,'notes':'부작용'},
-                                    ]}],
+                                    }],
                     },
                 }
             ),
@@ -323,17 +317,24 @@ class ProfileView(APIView):
         ],
     )
     def get(self, request, user_id=None):
+        
         if user_id is None:
             user = request.user
         else:
             user = get_object_or_404(User, pk=user_id)
+        
         profile = get_object_or_404(Profile, user=user)
         pf_serializer = ProfileSerializer(profile, context={'request':request})
         
         profile_data = pf_serializer.data
         
+         # 해당 user의 성분 분석 결과를 가져오기
+        user_analysis_results = UserAnalysisResult.objects.filter(user=user)
+        user_analysis_results_serializer = UserAnalysisResultSerializer(user_analysis_results, many=True)
+
         data = {
             "profile": profile_data,
+            "user_analysis_results": user_analysis_results_serializer.data  # 성분 분석 결과 추가
         }
 
         return Response(data, status=status.HTTP_200_OK)
@@ -383,6 +384,8 @@ class ProfileEditView(APIView):
         profile = request.user.profile
         serializer = ProfileSerializer(profile, data=request.data)
 
+        # 주차정보 모름일 때 , pregnancyDate null로 변경
+        
         if serializer.is_valid():
             serializer.save()
             return Response({"message": "프로필 수정이 완료되었습니다."}, status=status.HTTP_200_OK)
