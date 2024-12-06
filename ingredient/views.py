@@ -1,8 +1,9 @@
-from drf_spectacular.utils import OpenApiExample, extend_schema, inline_serializer, OpenApiParameter
+from drf_spectacular.utils import OpenApiExample, extend_schema, inline_serializer, OpenApiParameter, OpenApiResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.views import APIView
 from rest_framework import status
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -18,6 +19,87 @@ import pandas as pd
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
+
+# 페이징 처리 클래스
+class IngredientPagination(PageNumberPagination):
+    page_size = 20  # 한 페이지에 20개 항목
+    page_size_query_param = 'page_size'
+    max_page_size = 100  # 최대 페이지 크기 제한
+
+
+class Dictionary(APIView):
+    @extend_schema(
+        summary="검색 결과 API",
+        description="검색 결과 API에 대한 설명 입니다. 주어진 키워드에 따라 FAQ와 성분 정보를 검색하여 반환합니다.",
+        parameters=[
+            OpenApiParameter(name='sort', description='정렬 방법', required=True, type=str),
+            OpenApiParameter(name='page', description='페이지 번호 (정수 값)', required=False, type=int),
+        ],
+        tags=["Search"],
+        responses={
+            200: OpenApiResponse(
+                response=IngredientSerializer,
+                description="성분 사전 API.",
+                examples=[
+                    OpenApiExample(
+                        name="200_OK",
+                        value={
+                            "ingredients": [
+                                {
+                                    "id": 1,
+                                    "ingredientKr": "성분 예시",
+                                    "ingredientDescription": "이 성분은 예시 설명입니다."
+                                }
+                            ]
+                        },
+                    ),
+                    OpenApiExample(
+                        name="400_BAD_REQUEST",
+                        value={
+                            "message": "정렬 방법이 없습니다.",
+                        },
+                    ),
+                    OpenApiExample(
+                        name="401_UNAUTHORIZED",
+                        value={
+                            "message": "401_UNAUTHORIZED",
+                        },
+                    ),
+                ],
+            )
+        },
+    )
+    def get(self, request):
+        # sort와 page 파라미터 받기
+        sort = request.GET.get('sort')
+        page = int(request.GET.get('page', 1))
+
+        if not sort:
+            return Response({"message": "정렬 방법이 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 정렬 기준에 따른 QuerySet 처리
+        if sort == 'name':
+            ingredients = Ingredient.objects.all().order_by('-ingredientKr')  # ingredientKr 기준 내림차순
+        elif sort == 'level':
+            ingredients = Ingredient.objects.all().order_by('-level')  # level 기준 내림차순
+        else:
+            return Response({"message": "잘못된 정렬 기준입니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 페이징 처리
+        paginator = IngredientPagination()
+        paginated_ingredients = paginator.paginate_queryset(ingredients, request)
+
+        # Serializer 적용
+        ingredients_serializer = IngredientSerializer(paginated_ingredients, many=True).data
+
+        response_data = {
+            "ingredients": ingredients_serializer,
+            "count": ingredients.count(),  # 총 항목 수
+            "page": page,
+            "page_size": paginator.page_size,
+        }
+
+        return paginator.get_paginated_response(response_data)
 
 
 class IngredientAnalysis(APIView):
