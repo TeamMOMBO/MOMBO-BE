@@ -29,8 +29,8 @@ class IngredientPagination(PageNumberPagination):
 
 class Dictionary(APIView):
     @extend_schema(
-        summary="검색 결과 API",
-        description="검색 결과 API에 대한 설명 입니다. 주어진 키워드에 따라 FAQ와 성분 정보를 검색하여 반환합니다.",
+        summary="성분 사전 API",
+        description="성분 사전 API에 대한 설명 입니다. 주어진 정렬 방법에 따라 성분 리스트를 반환합니다.",
         parameters=[
             OpenApiParameter(name='sort', description='정렬 방법', required=True, type=str),
             OpenApiParameter(name='page', description='페이지 번호 (정수 값)', required=False, type=int),

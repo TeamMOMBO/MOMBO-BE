@@ -33,7 +33,7 @@ class Login(APIView):
         summary="카카오 로그인 API",
         description="카카오 로그인에 대한 설명 입니다.",
         parameters=[],
-        tags=["Kakao Login"],
+        tags=["User"],
         responses=ProfileSerializer,
         request=inline_serializer(
             name="KakaoCallback",
