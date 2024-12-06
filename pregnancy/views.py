@@ -105,14 +105,9 @@ class Home(APIView):
         profile = Profile.objects.get(user=user)
         profileSerializer = ProfileSerializer(profile) # 프로필 직렬화
         
-        test = {'week':weeks_since(profileSerializer.data['pregnancyDate'])}
-
-        return Response(test, status=status.HTTP_200_OK)
-        
         # 주차별 정보 가져오기 / pregnancyDate로 주차 계산
         weekInformation = Information.objects.get(week=weeks_since(profileSerializer.data['pregnancyDate']))
         weekInformationSerializer = InformationSerializer(weekInformation)
-        
 
         # 모든 FAQ 가져와서 랜덤 3개 추출
         max_id = FAQ.objects.all().aggregate(max_id=Max("id"))['max_id'] 
