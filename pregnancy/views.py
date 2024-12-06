@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.pagination import PageNumberPagination
 from django.db.models import Max, Q
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import FAQ, Information
@@ -23,6 +24,13 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 # Create your views here.
+
+# 페이징 처리 클래스
+class SearchPagination(PageNumberPagination):
+    page_size = 20  # 한 페이지에 20개 항목
+    page_size_query_param = 'page_size'
+    max_page_size = 100  # 최대 페이지 크기 제한
+    
 
 class Home(APIView):
     permission_classes = [IsAuthenticated]
@@ -220,22 +228,42 @@ class Search(APIView):
             faqs = FAQ.objects.filter(
                 Q(question__icontains=keyword) | Q(real_question__icontains=keyword) | Q(answer__icontains=keyword)
             ).order_by('-id')
-            faqs_serializer = FAQSerializer(faqs, many=True).data
+            
+            # 페이징 처리
+            paginator = SearchPagination()
+            paginated_faqs = paginator.paginate_queryset(faqs, request)
+
+            faqs_serializer = FAQSerializer(paginated_faqs, many=True).data
+            maxPage = (faqs.count() + paginator.page_size - 1) // paginator.page_size
             
             response_data = {
                 "faqs": faqs_serializer,
+                "count": faqs.count(),  # 총 항목 수
+                "page": page,
+                "page_size": paginator.page_size,
+                "maxPage": maxPage,
             }
 
-            return Response(response_data, status=status.HTTP_200_OK)
+            return paginator.get_paginated_response(response_data)
         else:
             ingredients = Ingredient.objects.filter(Q(ingredientKr__icontains=keyword)).order_by('-id')
-            ingredients_serializer = IngredientSerializer(ingredients, many=True).data
             
+            # 페이징 처리
+            paginator = SearchPagination()
+            paginated_ingredients = paginator.paginate_queryset(ingredients, request)
+
+            ingredients_serializer = IngredientSerializer(paginated_ingredients, many=True).data
+            maxPage = (ingredients.count() + paginator.page_size - 1) // paginator.page_size
+
             response_data = {
                 "ingredients": ingredients_serializer,
+                "count": ingredients.count(),  # 총 항목 수
+                "page": page,
+                "page_size": paginator.page_size,
+                "maxPage": maxPage,
             }
 
-            return Response(response_data, status=status.HTTP_200_OK)
+            return paginator.get_paginated_response(response_data)
 
 
 class FAQUploadAPIView(APIView):
