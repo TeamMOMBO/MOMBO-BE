@@ -264,6 +264,113 @@ class Search(APIView):
             }
 
             return paginator.get_paginated_response(response_data)
+        
+        
+class Content(APIView):
+    @extend_schema(
+        summary="콘텐츠 API",
+        description="콘텐츠 API에 대한 설명 입니다. FAQ와 주차별 정보를 반환합니다.",
+        parameters=[
+            OpenApiParameter(name='page', description='페이지 번호 (정수 값)', required=False, type=int),
+            OpenApiParameter(
+                name='category', 
+                description="카테고리 (가능한 값: 'all', 'faq', 'info')", 
+                required=False, 
+                type=str,
+                enum=['all', 'faq', 'info']  # 선택 가능한 값 제한
+            )
+        ],
+        tags=["Search"],
+        responses={
+            200: OpenApiResponse(
+                response=InformationSerializer,
+                description="콘텐츠를 반환합니다.",
+                examples=[
+                    OpenApiExample(
+                        name="200_OK",
+                        value={
+                            "weekinformations": [
+                                {
+                                    "id": 4,
+                                    "step": "초기",
+                                    "week": 6,
+                                    "fetus": "초음파로 배아의 심장박동이 뛰는 것을 볼 수 있습니다. ...",
+                                    "maternity": "임신하면 호르몬의 영향으로 자궁으로 가는 혈액의 양이 늘어나고 ...",
+                                    "summary": "호르몬의 변화로 자궁에 가는 혈액이 늘어나고 대사가 활발해져요. ..."
+                                }
+                            ],
+                            "faqs": [
+                                {
+                                    "id": 114,
+                                    "question": "임신 중 배 뭉침이 너무 잦아서 걱정입니다.",
+                                    "real_question": "임신 29주 때 배 뭉침이 잦아서 문의 드렸는데, ...",
+                                    "answer": "자궁 경부 길이가 짧아졌다는 것은 조기 진통 ...",
+                                    "views": 0
+                                }
+                            ]
+                        },
+                    ),
+                    OpenApiExample(
+                        name="400_BAD_REQUEST",
+                        value={
+                            "message": "400_BAD_REQUEST",
+                        },
+                    ),
+                    OpenApiExample(
+                        name="401_UNAUTHORIZED",
+                        value={
+                            "message": "401_UNAUTHORIZED",
+                        },
+                    ),
+                ],
+            )
+        },
+    )
+    def get(self, request):
+        category = request.GET.get('category')
+        page = int(request.GET.get('page', 1))
+
+        if category == 'all':
+            faqs = FAQ.objects.all().order_by('-id')[:3]
+            faqs_serializer = FAQSerializer(faqs, many=True).data
+            
+            weekinformations = Information.objects.all().order_by('-id')[:3]
+            weekinformations_serializer = InformationSerializer(weekinformations, many=True).data
+            
+            response_data = {
+                "faqs": faqs_serializer,
+                "weekinformations": weekinformations_serializer,
+            }
+
+            return Response(response_data, status=status.HTTP_200_OK)
+        elif category == 'faq':
+            faqs = FAQ.objects.all().order_by('-id')
+            
+            # 페이징 처리
+            paginator = SearchPagination()
+            paginated_faqs = paginator.paginate_queryset(faqs, request)
+
+            faqs_serializer = FAQSerializer(paginated_faqs, many=True).data
+            maxPage = (faqs.count() + paginator.page_size - 1) // paginator.page_size
+            
+            response_data = {
+                "faqs": faqs_serializer,
+                "count": faqs.count(),  # 총 항목 수
+                "page": page,
+                "page_size": paginator.page_size,
+                "maxPage": maxPage,
+            }
+
+            return paginator.get_paginated_response(response_data)
+        elif category == 'info':
+            weekinformations = Information.objects.all().order_by('-id')
+            weekinformations_serializer = InformationSerializer(weekinformations, many=True).data
+            
+            response_data = {
+                "weekinformations": weekinformations_serializer,
+            }
+        else:
+            return Response({"error": "유효한 카테고리가 아닙니다."}, status=status.HTTP_400_BAD_REQUEST) 
 
 
 class FAQUploadAPIView(APIView):

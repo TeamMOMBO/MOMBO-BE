@@ -26,7 +26,7 @@ from drf_spectacular.views import SpectacularRedocView
 from drf_spectacular.views import SpectacularSwaggerView
 from drf_spectacular.views import SpectacularYAMLAPIView
 
-from pregnancy.views import Home, Search
+from pregnancy.views import Home, Search, Content
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -36,6 +36,7 @@ urlpatterns = [
     
     path("main/", Home.as_view(), name="home"),
     path("search/", Search.as_view(), name="search"),
+    path("content/", Content.as_view(), name="content"),
     
     # Open API 자체를 조회 : json, yaml
     # path("api/json/", login_required(SpectacularJSONAPIView.as_view()), name="schema-json"), # 로그인을 해야만 볼 수 있음.

@@ -9,6 +9,7 @@ class FAQ(models.Model):
     real_question = models.CharField(max_length=250,null=True, blank=True)
     answer = models.CharField(max_length=250,null=True, blank=True)
     views = models.IntegerField(null=True, blank=True)
+    image = models.CharField(max_length=50,null=True, blank=True, default="https://i.ibb.co/CQQ4rBK/suhyeon-choi-NIZeg731-Lx-M-unsplash.jpg")
 
 
 class Information(models.Model):
