@@ -280,7 +280,7 @@ class Content(APIView):
                 enum=['all', 'faq', 'info']  # 선택 가능한 값 제한
             )
         ],
-        tags=["Search"],
+        tags=["Content"],
         responses={
             200: OpenApiResponse(
                 response=InformationSerializer,
