@@ -146,17 +146,9 @@ class Home(APIView):
 class Search(APIView):
     @extend_schema(
         summary="검색 결과 API",
-        description="검색 결과 API에 대한 설명 입니다. 주어진 키워드에 따라 FAQ와 성분 정보를 검색하여 반환합니다.",
+        description="검색 결과 API에 대한 설명 입니다.",
         parameters=[
             OpenApiParameter(name='keyword', description='검색어', required=True, type=str),
-            OpenApiParameter(name='page', description='페이지 번호 (정수 값)', required=False, type=int),
-            OpenApiParameter(
-                name='category', 
-                description="검색 카테고리 (가능한 값: 'all', 'content', 'ingredient')", 
-                required=False, 
-                type=str,
-                enum=['all', 'content', 'ingredient']  # 선택 가능한 값 제한
-            )
         ],
         tags=["Search"],
         responses={
@@ -176,11 +168,94 @@ class Search(APIView):
                                     "views": 0
                                 }
                             ],
+                            "faqsCount":1,
                             "ingredients": [
                                 {
                                     "id": 1,
                                     "ingredientKr": "성분 예시",
                                     "ingredientDescription": "이 성분은 예시 설명입니다."
+                                }
+                            ],
+                            "ingredientsCount":1,
+                        },
+                    ),
+                    OpenApiExample(
+                        name="400_BAD_REQUEST",
+                        value={
+                            "message": "검색 창이 입력되지 않았습니다.",
+                        },
+                    ),
+                    OpenApiExample(
+                        name="401_UNAUTHORIZED",
+                        value={
+                            "message": "401_UNAUTHORIZED",
+                        },
+                    ),
+                ],
+            )
+        },
+    )
+    def get(self, request):
+        keyword = request.GET.get('keyword')
+
+        if not keyword:
+            return Response({"message": "검색 창이 입력되지 않았습니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # FAQ
+        faqs_queryset = FAQ.objects.filter(
+            Q(question__icontains=keyword) | Q(real_question__icontains=keyword) | Q(answer__icontains=keyword)
+        )
+        faqs_count = faqs_queryset.count()
+        faqs = faqs_queryset.order_by('-id')[:3]
+        faqs_serializer = FAQSerializer(faqs, many=True).data
+
+        # Ingredient
+        ingredients_queryset = Ingredient.objects.filter(Q(ingredientKr__icontains=keyword))
+        ingredients_count = ingredients_queryset.count()
+        ingredients = ingredients_queryset.order_by('-id')[:3]
+        ingredients_serializer = IngredientSerializer(ingredients, many=True).data
+        
+        response_data = {
+            "faqs": faqs_serializer,
+            "faqsCount": faqs_count,
+            "ingredients": ingredients_serializer,
+            "ingredientsCount": ingredients_count
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
+
+
+class SearchDetail(APIView):
+    @extend_schema(
+        summary="검색 결과 디테일 API",
+        description="검색 결과 디테일 API에 대한 설명 입니다. 주어진 키워드에 따라 FAQ와 성분 정보를 검색하여 반환합니다.",
+        parameters=[
+            OpenApiParameter(name='keyword', description='검색어', required=True, type=str),
+            OpenApiParameter(name='page', description='페이지 번호 (정수 값)', required=False, type=int),
+            OpenApiParameter(
+                name='category', 
+                description="검색 카테고리 (가능한 값: 'content', 'ingredient')", 
+                required=False, 
+                type=str,
+                enum=[ 'content', 'ingredient']  # 선택 가능한 값 제한
+            )
+        ],
+        tags=["Search"],
+        responses={
+            200: OpenApiResponse(
+                response=InformationSerializer,
+                description="검색 결과를 반환합니다.",
+                examples=[
+                    OpenApiExample(
+                        name="200_OK",
+                        value={
+                            "category": [
+                                {
+                                    "id": 114,
+                                    "question": "임신 중 배 뭉침이 너무 잦아서 걱정입니다.",
+                                    "real_question": "임신 29주 때 배 뭉침이 잦아서 문의 드렸는데, ...",
+                                    "answer": "자궁 경부 길이가 짧아졌다는 것은 조기 진통 ...",
+                                    "views": 0
                                 }
                             ]
                         },
@@ -209,22 +284,7 @@ class Search(APIView):
         if not keyword:
             return Response({"message": "검색 창이 입력되지 않았습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
-        if category == 'all':
-            faqs = FAQ.objects.filter(
-                Q(question__icontains=keyword) | Q(real_question__icontains=keyword) | Q(answer__icontains=keyword)
-            ).order_by('-id')[:3]
-            faqs_serializer = FAQSerializer(faqs, many=True).data
-            
-            ingredients = Ingredient.objects.filter(Q(ingredientKr__icontains=keyword)).order_by('-id')[:3]
-            ingredients_serializer = IngredientSerializer(ingredients, many=True).data
-            
-            response_data = {
-                "faqs": faqs_serializer,
-                "ingredients": ingredients_serializer,
-            }
-
-            return Response(response_data, status=status.HTTP_200_OK)
-        elif category == 'content':
+        if category == 'content':
             faqs = FAQ.objects.filter(
                 Q(question__icontains=keyword) | Q(real_question__icontains=keyword) | Q(answer__icontains=keyword)
             ).order_by('-id')

@@ -26,7 +26,7 @@ from drf_spectacular.views import SpectacularRedocView
 from drf_spectacular.views import SpectacularSwaggerView
 from drf_spectacular.views import SpectacularYAMLAPIView
 
-from pregnancy.views import Home, Search, Content
+from pregnancy.views import Home, Search, Content, SearchDetail
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -36,6 +36,7 @@ urlpatterns = [
     
     path("main/", Home.as_view(), name="home"),
     path("search/", Search.as_view(), name="search"),
+    path("search/details/", SearchDetail.as_view(), name="search_detail"),
     path("content/", Content.as_view(), name="content"),
     
     # Open API 자체를 조회 : json, yaml
