@@ -3,4 +3,5 @@ __pycache__
 .vscode
 .env
 /media
-db.sqlite3
+*/migrations
+*.sqlite3
