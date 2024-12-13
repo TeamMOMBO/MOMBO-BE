@@ -175,7 +175,6 @@ class IngredientAnalysis(APIView):
 
         try:
             user = request.user
-            # user = User.objects.get(id=1)
         except:
             Response(message, status=status.HTTP_401_UNAUTHORIZED)
 
