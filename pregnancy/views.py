@@ -212,7 +212,7 @@ class Search(APIView):
         # Ingredient
         ingredients_queryset = Ingredient.objects.filter(Q(ingredientKr__icontains=keyword))
         ingredients_count = ingredients_queryset.count()
-        ingredients = ingredients_queryset.order_by('-id')[:3]
+        ingredients = ingredients_queryset.order_by('level', 'ingredientKr')[:3]
         ingredients_serializer = IngredientSerializer(ingredients, many=True).data
         
         response_data = {
@@ -324,7 +324,7 @@ class SearchDetail(APIView):
 
             return paginator.get_paginated_response(response_data)
         else:
-            ingredients = Ingredient.objects.filter(Q(ingredientKr__icontains=keyword)).order_by('-id')
+            ingredients = Ingredient.objects.filter(Q(ingredientKr__icontains=keyword)).order_by('level', 'ingredientKr')
             
             # 페이징 처리
             paginator = SearchPagination()
@@ -412,7 +412,7 @@ class Content(APIView):
             faqs = FAQ.objects.all().order_by('-id')[:3]
             faqs_serializer = FAQSerializer(faqs, many=True).data
             
-            weekinformations = Information.objects.all().order_by('-id')[:3]
+            weekinformations = Information.objects.all().order_by('id')[:3]
             weekinformations_serializer = InformationSerializer(weekinformations, many=True).data
             
             response_data = {
@@ -441,7 +441,7 @@ class Content(APIView):
 
             return paginator.get_paginated_response(response_data)
         elif category == 'info':
-            weekinformations = Information.objects.all().order_by('-id')
+            weekinformations = Information.objects.all().order_by('id')
             weekinformations_serializer = InformationSerializer(weekinformations, many=True).data
             
             response_data = {
