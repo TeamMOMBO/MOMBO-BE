@@ -447,6 +447,8 @@ class Content(APIView):
             response_data = {
                 "weekinformations": weekinformations_serializer,
             }
+            
+            return Response(response_data, status=status.HTTP_200_OK)
         else:
             return Response({"error": "유효한 카테고리가 아닙니다."}, status=status.HTTP_400_BAD_REQUEST) 
 
