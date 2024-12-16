@@ -576,6 +576,21 @@ class FAQUploadAPIView(APIView):
         return Response({"message": "데이터가 성공적으로 업로드되었습니다."}, status=status.HTTP_201_CREATED)
     
 
+class FAQImageUpdateAPIView(APIView):
+    @extend_schema(summary="FAQ 이미지 임시 업데이트 API")
+    def post(self, request):
+        # 임시로 넣을 특정 값 (예: 기본 이미지 URL)
+        temp_image_url = "https://i.ibb.co/CQQ4rBK/suhyeon-choi-NIZeg731-Lx-M-unsplash.jpg"
+
+        # 모든 FAQ 데이터를 가져와 image 값을 업데이트
+        FAQ.objects.all().update(image=temp_image_url)
+
+        return Response(
+            {"message": "모든 FAQ의 이미지가 임시 값으로 업데이트되었습니다."},
+            status=status.HTTP_200_OK
+        )
+    
+
 class InfomationUploadAPIView(APIView):
     parser_classes = (MultiPartParser, FormParser)
     @extend_schema(exclude=True)
