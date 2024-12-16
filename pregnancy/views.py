@@ -522,6 +522,8 @@ class ContentDetail(APIView):
 
         if category == 'faq':
             faq = FAQ.objects.get(pk=postNo)
+            faq.views += 1  # views 값을 +1 증가
+            faq.save()  # 변경 사항 저장
             faq_serializer = FAQSerializer(faq).data
             
             response_data = {
