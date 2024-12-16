@@ -176,7 +176,7 @@ class IngredientAnalysis(APIView):
         try:
             user = request.user
         except:
-            Response(message, status=status.HTTP_401_UNAUTHORIZED)
+            Response({"error": "유저를 찾을 수 없습니다."}, status=status.HTTP_401_UNAUTHORIZED)
 
         profile = Profile.objects.get(user=user)
         serializer = ProfileSerializer(profile)  # 프로필 직렬화
