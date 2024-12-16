@@ -316,20 +316,20 @@ class ProfileView(APIView):
             ),
         ],
     )
-    def get(self, request, user_id=None):
+    def get(self, request):
         
-        if user_id is None:
+        try:
             user = request.user
-        else:
-            user = get_object_or_404(User, pk=user_id)
+        except:
+            Response({"message": "유저 정보를 찾을 수 없습니다."}, status=status.HTTP_401_UNAUTHORIZED)
         
         profile = get_object_or_404(Profile, user=user)
         pf_serializer = ProfileSerializer(profile, context={'request':request})
         
         profile_data = pf_serializer.data
         
-         # 해당 user의 성분 분석 결과를 가져오기
-        user_analysis_results = UserAnalysisResult.objects.filter(user=user)
+        # 해당 user의 성분 분석 결과를 가져오기
+        user_analysis_results = UserAnalysisResult.objects.filter(user_id=user)
         user_analysis_results_serializer = UserAnalysisResultSerializer(user_analysis_results, many=True)
 
         data = {
