@@ -518,7 +518,7 @@ class ContentDetail(APIView):
     )
     def get(self, request):
         category = request.GET.get('category')
-        postNo = int(request.GET.get('page'))
+        postNo = int(request.GET.get('postNo'))
 
         if category == 'faq':
             faq = FAQ.objects.get(pk=postNo)
