@@ -450,6 +450,95 @@ class Content(APIView):
             
             return Response(response_data, status=status.HTTP_200_OK)
         else:
+            return Response({"error": "유효한 카테고리가 아닙니다."}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class ContentDetail(APIView):
+    @extend_schema(
+        summary="콘텐츠 디테일 API",
+        description="콘텐츠 디테일 API에 대한 설명 입니다. FAQ와 주차별 정보의 디테일 정보를 반환합니다.",
+        parameters=[
+            OpenApiParameter(name='postNo', description='게시글 번호 (정수 값)', required=True, type=int),
+            OpenApiParameter(
+                name='category', 
+                description="카테고리 (가능한 값: 'faq', 'info')", 
+                required=True, 
+                type=str,
+                enum=['faq', 'info']  # 선택 가능한 값 제한
+            )
+        ],
+        tags=["Content"],
+        responses={
+            200: OpenApiResponse(
+                response=InformationSerializer,
+                description="콘텐츠 디테일을 반환합니다.",
+                examples=[
+                    OpenApiExample(
+                        name="200_INFO_OK",
+                        value={
+                            "result": 
+                                {
+                                    "id": 4,
+                                    "step": "초기",
+                                    "week": 6,
+                                    "fetus": "초음파로 배아의 심장박동이 뛰는 것을 볼 수 있습니다. ...",
+                                    "maternity": "임신하면 호르몬의 영향으로 자궁으로 가는 혈액의 양이 늘어나고 ...",
+                                    "summary": "호르몬의 변화로 자궁에 가는 혈액이 늘어나고 대사가 활발해져요. ..."
+                                }
+                        },
+                    ),
+                    OpenApiExample(
+                        name="200_FAQ_OK",
+                        value={
+                            "result": 
+                                {
+                                    "id": 114,
+                                    "question": "임신 중 배 뭉침이 너무 잦아서 걱정입니다.",
+                                    "real_question": "임신 29주 때 배 뭉침이 잦아서 문의 드렸는데, ...",
+                                    "answer": "자궁 경부 길이가 짧아졌다는 것은 조기 진통 ...",
+                                    "views": 0
+                                }
+                        },
+                    ),
+                    OpenApiExample(
+                        name="400_BAD_REQUEST",
+                        value={
+                            "message": "400_BAD_REQUEST",
+                        },
+                    ),
+                    OpenApiExample(
+                        name="401_UNAUTHORIZED",
+                        value={
+                            "message": "401_UNAUTHORIZED",
+                        },
+                    ),
+                ],
+            )
+        },
+    )
+    def get(self, request):
+        category = request.GET.get('category')
+        postNo = int(request.GET.get('page'))
+
+        if category == 'faq':
+            faq = FAQ.objects.get(pk=postNo)
+            faq_serializer = FAQSerializer(faq).data
+            
+            response_data = {
+                "result": faq_serializer,
+            }
+            
+            return Response(faq_serializer, status=status.HTTP_200_OK)
+        elif category == 'info':
+            weekinformation = Information.objects.get(pk=postNo)
+            weekinformation_serializer = InformationSerializer(weekinformation).data
+            
+            response_data = {
+                "result": weekinformation_serializer,
+            }
+            
+            return Response(response_data, status=status.HTTP_200_OK)
+        else:
             return Response({"error": "유효한 카테고리가 아닙니다."}, status=status.HTTP_400_BAD_REQUEST) 
 
 
