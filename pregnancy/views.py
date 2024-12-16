@@ -530,7 +530,7 @@ class ContentDetail(APIView):
                 "result": faq_serializer,
             }
             
-            return Response(faq_serializer, status=status.HTTP_200_OK)
+            return Response(response_data, status=status.HTTP_200_OK)
         elif category == 'info':
             weekinformation = Information.objects.get(pk=postNo)
             weekinformation_serializer = InformationSerializer(weekinformation).data
