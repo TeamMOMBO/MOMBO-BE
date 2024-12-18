@@ -35,7 +35,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -77,7 +76,6 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.TokenAuthentication',
-        'mombo.authentication.CookieJWTAuthentication'
     ),
     
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
@@ -138,18 +136,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mombo.wsgi.application'
 
-CORS_ALLOWED_ORIGINS = [
-    "https://www.mombo.site",
-    "http://192.168.1.16:3000",
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "https://www.mombo.site",
+#     "http://192.168.1.16:3000",
+# ]
 
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOW_CREDENTIALS = True
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://www.mombo.site",
-    "http://192.168.1.16:3000",
-]
+# CORS_ALLOW_CREDENTIALS = True
+
+# CSRF_TRUSTED_ORIGINS = [
+#     "https://www.mombo.site",
+#     "http://192.168.1.16:3000",
+# ]
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
