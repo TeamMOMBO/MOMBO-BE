@@ -82,7 +82,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(seconds=30),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
@@ -142,13 +142,12 @@ WSGI_APPLICATION = 'mombo.wsgi.application'
 # ]
 
 CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
 
-# CORS_ALLOW_CREDENTIALS = True
-
-# CSRF_TRUSTED_ORIGINS = [
-#     "https://www.mombo.site",
-#     "http://192.168.1.16:3000",
-# ]
+CSRF_TRUSTED_ORIGINS = [
+    "https://www.mombo.site",
+    "http://192.168.1.16:3000",
+]
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
