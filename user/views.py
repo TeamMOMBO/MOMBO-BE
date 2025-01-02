@@ -50,8 +50,8 @@ class Login(APIView):
                     "res_data": {
                         "message": "Login success",
                         "token": {
-                            "access": "eyJhbGci123213iIqwesInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAxMjcwMDQwLCJpYXQiOjE3MDEyNjI4NDAsImp0aSI6IjAyNjU5NjkwZmM3YjQ3Njg4YzkxZDUxOThiMDNlMjgyIiwidXNlcl9pZCI6Nn0.TjEFfq-K3Q7Ol31roq7MybH7iJ_r9dW0cbUt9cG9Gac",
-                            "refresh": "eyJhbGc123424zI1NasiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcwMTM0OTI0MCwiaWF0IjoxNzAxMjYyODQwLCJqdGkiOiIxMzk0ZTdhNWJiM2Y0MzQ0Yjk0OWU3MWYyNDhjMzQ4YyIsInVzZXJfaWQiOjZ9.1eTJK2LgWV8KprCO-HcvaZyg6GjVsnQl7PlkvzuJPhM"
+                            "access": "eyJhbGci123213iIqwesInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjo...",
+                            "refresh": "eyJhbGc123424zI1NasiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBl..."
                         }
                     },
                 }
@@ -174,7 +174,13 @@ class Join(APIView):
                 name="200_OK",
                 value={
                     "status": 200,
-                    "res_data": {"message": "회원가입 성공"},
+                    "res_data": {
+                        "message": "회원가입 성공",
+                        "token": {
+                            "access": "eyJhbGci123213iIqwesInR5cCI6IkpXVCJ9.eyJ0b...",
+                            "refresh": "eyJhbGc123424zI1NasiIsInR5cCI6IkpXVCJ9.eyJ..."
+                        }
+                    },
                 }
             ),
             OpenApiExample(
