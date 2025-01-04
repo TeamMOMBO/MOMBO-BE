@@ -15,6 +15,7 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import UserSerializer, ProfileSerializer
 from .models import Profile, User
 from .utils import set_to_next_monday
+from pregnancy.utils import weeks_since
 from ingredient.models import Ingredient, UserAnalysisResult, IngredientResult
 from ingredient.serializers import IngredientSerializer, UserAnalysisResultSerializer, IngredientResultSerializer
 import dotenv
@@ -336,6 +337,13 @@ class ProfileView(APIView):
         
         profile_data = pf_serializer.data
         
+        if profile_data['pregnancyDate']:
+            pregnancyWeek = weeks_since(profile_data['pregnancyDate'])
+        else:
+            pregnancyWeek = 0
+            
+        profile_data['pregnancyWeek'] = pregnancyWeek
+        
         # 해당 user의 성분 분석 결과를 가져오기
         user_analysis_results = UserAnalysisResult.objects.filter(user_id=user)
         user_analysis_results_serializer = UserAnalysisResultSerializer(user_analysis_results, many=True)
@@ -391,9 +399,13 @@ class ProfileEditView(APIView):
     def put(self, request):
         profile = request.user.profile
         
+        pregnancyWeek = request.data.get('pregnancyWeek')
+        
         # pregnancyDate가 0일 경우 None (null)로 설정
-        if request.data.get('pregnancyDate') == 0:
+        if pregnancyWeek == 0:
             request.data['pregnancyDate'] = None
+        else:
+            request.data['pregnancyDate'] = set_to_next_monday(pregnancyWeek)
 
         serializer = ProfileSerializer(profile, data=request.data)
         
