@@ -135,13 +135,13 @@ class Login(APIView):
                 access_token = str(token.access_token)
                 refresh_token = str(token)
                 
-                # return HttpResponseRedirect(f"http://localhost:3000/login/redirection?isMember=true&accessToken={access_token}&refreshToken={refresh_token}")
+                return HttpResponseRedirect(f"http://localhost:3000/login/redirection?isMember=true&accessToken={access_token}&refreshToken={refresh_token}")
                 # return HttpResponseRedirect(f"http://192.168.1.16:3000/login/redirection?isMember=true&accessToken={access_token}&refreshToken={refresh_token}")
-                return HttpResponseRedirect(f"https://www.mombo.site/login/redirection?isMember=true&accessToken={access_token}&refreshToken={refresh_token}")
+                # return HttpResponseRedirect(f"https://www.mombo.site/login/redirection?isMember=true&accessToken={access_token}&refreshToken={refresh_token}")
             except User.DoesNotExist:
-                # return HttpResponseRedirect(f"http://localhost:3000/login/redirection?isMember=false&email={email}")
+                return HttpResponseRedirect(f"http://localhost:3000/login/redirection?isMember=false&email={email}")
                 # return HttpResponseRedirect(f"http://192.168.1.16:3000/login/redirection?isMember=false&email={email}")
-                return HttpResponseRedirect(f"https://www.mombo.site/login/redirection?isMember=false&email={email}")
+                # return HttpResponseRedirect(f"https://www.mombo.site/login/redirection?isMember=false&email={email}")
 
 
 class Join(APIView):
@@ -435,7 +435,7 @@ class Withdrawal(APIView):
         refresh_token.blacklist()
         
         profile = user.profile
-        profile.name =f'deleteuser_{profile.id}'
+        profile.nickname =f'deleteuser_{profile.id}'
         profile.save()
         
         user.is_active = False
