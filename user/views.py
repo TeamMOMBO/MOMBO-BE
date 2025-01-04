@@ -365,9 +365,16 @@ class ProfileEditView(APIView):
         description="프로필 수정 API에 대한 설명 입니다.",
         parameters=[],
         tags=["Profile"],
-        responses=ProfileSerializer,
+        responses=inline_serializer(
+            name="Profile_Edit_API",
+            fields={
+                "nickname": serializers.CharField(),
+                "userType": serializers.CharField(),
+                "pregnancyWeek": serializers.IntegerField(),
+            },
+        ),
         request=inline_serializer(
-            name="Join_API",
+            name="Profile_Edit_API",
             fields={
                 "nickname": serializers.CharField(),
                 "userType": serializers.CharField(),
