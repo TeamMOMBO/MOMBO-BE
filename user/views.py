@@ -414,15 +414,22 @@ class ProfileEditView(APIView):
         profile = request.user.profile
         
         pregnancyWeek = request.data.get('pregnancyWeek')
-        reqData = request.data
+        userType = request.data.get('userType')
+        nickname = request.data.get('nickname')
         
-        # pregnancyDate가 0일 경우 None (null)로 설정
+        # pregnancyWeek가 0일 경우 None (null)로 설정
         if pregnancyWeek == 0:
-            reqData['pregnancyDate'] = None
+            pregnancyDate = None
         else:
-            reqData['pregnancyDate'] = set_to_next_monday(pregnancyWeek)
+            pregnancyDate = set_to_next_monday(pregnancyWeek)
+        
+        edit_data = {
+            'pregnancyDate': pregnancyDate,
+            'userType': userType,
+            'nickname': nickname
+        }
             
-        serializer = ProfileSerializer(profile, data=reqData)
+        serializer = ProfileSerializer(profile, data=edit_data)
         
         if serializer.is_valid():
             serializer.save()
