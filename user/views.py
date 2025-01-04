@@ -156,7 +156,7 @@ class Join(APIView):
                 "email": serializers.CharField(),
                 "nickname": serializers.CharField(),
                 "userType": serializers.CharField(),
-                "pregnancyDate": serializers.IntegerField(),
+                "pregnancyWeek": serializers.IntegerField(),
             },
         ),
         request=inline_serializer(
@@ -165,7 +165,7 @@ class Join(APIView):
                 "email": serializers.CharField(),
                 "nickname": serializers.CharField(),
                 "userType": serializers.CharField(),
-                "pregnancyDate": serializers.IntegerField(),
+                "pregnancyWeek": serializers.IntegerField(),
             },
         ),
         examples=[
@@ -213,7 +213,7 @@ class Join(APIView):
             
             nickname = request.data.get('nickname')
             userType = request.data.get('userType')
-            pregnancyDate = request.data.get('pregnancyDate')
+            pregnancyWeek = request.data.get('pregnancyWeek')
             
             profile_data = {
                 "user": user.id,
@@ -221,8 +221,8 @@ class Join(APIView):
                 "userType": userType,
             }
             
-            if pregnancyDate != 0:
-                profile_data["pregnancyDate"] = set_to_next_monday(pregnancyDate)
+            if pregnancyWeek != 0:
+                profile_data["pregnancyDate"] = set_to_next_monday(pregnancyWeek)
 
             pf_serializer = ProfileSerializer(profile, profile_data)
 
