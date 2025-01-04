@@ -406,6 +406,8 @@ class ProfileEditView(APIView):
             request.data['pregnancyDate'] = None
         else:
             request.data['pregnancyDate'] = set_to_next_monday(pregnancyWeek)
+            
+        del request.data['pregnancyWeek']
 
         serializer = ProfileSerializer(profile, data=request.data)
         
