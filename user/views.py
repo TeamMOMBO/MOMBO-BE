@@ -417,20 +417,26 @@ class ProfileEditView(APIView):
         userType = request.data.get('userType')
         nickname = request.data.get('nickname')
         
+        # pregnancyWeek를 숫자형으로 변환 (예외 처리 추가)
+        try:
+            pregnancyWeek = int(pregnancyWeek) if pregnancyWeek is not None else 0
+        except ValueError:
+            return Response({"error": "pregnancyWeek는 숫자여야 합니다."}, status=status.HTTP_400_BAD_REQUEST)
+
         # pregnancyWeek가 0일 경우 None (null)로 설정
         if pregnancyWeek == 0:
             pregnancyDate = None
         else:
             pregnancyDate = set_to_next_monday(pregnancyWeek)
-        
+
         edit_data = {
             'pregnancyDate': pregnancyDate,
             'userType': userType,
             'nickname': nickname
         }
-            
+
         serializer = ProfileSerializer(profile, data=edit_data)
-        
+
         if serializer.is_valid():
             serializer.save()
             return Response({"message": "프로필 수정이 완료되었습니다."}, status=status.HTTP_200_OK)
