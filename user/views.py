@@ -366,7 +366,14 @@ class ProfileEditView(APIView):
         parameters=[],
         tags=["Profile"],
         responses=ProfileSerializer,
-        request=ProfileSerializer,
+        request=inline_serializer(
+            name="Join_API",
+            fields={
+                "nickname": serializers.CharField(),
+                "userType": serializers.CharField(),
+                "pregnancyWeek": serializers.IntegerField(),
+            },
+        ),
         examples=[
             OpenApiExample(
                 response_only=True,
