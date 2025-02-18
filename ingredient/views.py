@@ -32,8 +32,21 @@ class Dictionary(APIView):
         summary="성분 사전 API",
         description="성분 사전 API에 대한 설명 입니다. 주어진 정렬 방법에 따라 성분 리스트를 반환합니다.",
         parameters=[
-            OpenApiParameter(name='sort', description='정렬 방법', required=True, type=str),
+            OpenApiParameter(
+                name='sort', 
+                description="정렬 기준", 
+                required=True, 
+                type=str,
+                enum=[ 'name', 'level']  # 선택 가능한 값 제한
+            ),
             OpenApiParameter(name='page', description='페이지 번호 (정수 값)', required=False, type=int),
+            OpenApiParameter(
+                name='order', 
+                description="정렬 순서", 
+                required=False, 
+                type=str,
+                enum=[ 'asc', 'desc']  # 선택 가능한 값 제한
+            )
         ],
         tags=["Ingredient"],
         responses={
@@ -73,17 +86,25 @@ class Dictionary(APIView):
         # sort와 page 파라미터 받기
         sort = request.GET.get('sort')
         page = int(request.GET.get('page', 1))
+        order = request.GET.get('order', 'asc')  # 'asc' is the default
 
         if not sort:
             return Response({"message": "정렬 방법이 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
         # 정렬 기준에 따른 QuerySet 처리
         if sort == 'name':
-            ingredients = Ingredient.objects.all().order_by('ingredientKr')  # ingredientKr 기준 오름차순
+            if order == 'desc':
+                ingredients = Ingredient.objects.all().order_by('-ingredientKr')  # 기준 내림차순
+            else:
+                ingredients = Ingredient.objects.all().order_by('ingredientKr')  # 기준 오름차순
         elif sort == 'level':
-            ingredients = Ingredient.objects.all().order_by('-level')  # level 기준 내림차순
+            if order == 'desc':
+                ingredients = Ingredient.objects.all().order_by('-level')  # 내림차순
+            else:
+                ingredients = Ingredient.objects.all().order_by('level')  # 오름차순
         else:
             return Response({"message": "잘못된 정렬 기준입니다."}, status=status.HTTP_400_BAD_REQUEST)
+
 
         # 페이징 처리
         paginator = IngredientPagination()
