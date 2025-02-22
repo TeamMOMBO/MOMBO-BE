@@ -94,7 +94,6 @@ class Login(APIView):
     def get(self, request):
         code = request.query_params.get('code')
 
-        # body에 해당 값을 포함시켜서 보내는 부분입니다.
         request_data = {
             'grant_type': 'authorization_code',
             'client_id': KAKAO_REST_API_KEY,
@@ -102,7 +101,6 @@ class Login(APIView):
             'code': code,
         }
         
-        # header에 content-type을 지정해주는 부분입니다.
         token_headers = {
             'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
         }
@@ -136,13 +134,13 @@ class Login(APIView):
                 access_token = str(token.access_token)
                 refresh_token = str(token)
                 
-                # return HttpResponseRedirect(f"http://localhost:3000/login/redirection?isMember=true&accessToken={access_token}&refreshToken={refresh_token}")
+                return HttpResponseRedirect(f"http://localhost:3000/login/redirection?isMember=true&accessToken={access_token}&refreshToken={refresh_token}")
                 # return HttpResponseRedirect(f"http://192.168.1.16:3000/login/redirection?isMember=true&accessToken={access_token}&refreshToken={refresh_token}")
-                return HttpResponseRedirect(f"https://www.mombo.site/login/redirection?isMember=true&accessToken={access_token}&refreshToken={refresh_token}")
+                # return HttpResponseRedirect(f"https://www.mombo.site/login/redirection?isMember=true&accessToken={access_token}&refreshToken={refresh_token}")
             except User.DoesNotExist:
-                # return HttpResponseRedirect(f"http://localhost:3000/login/redirection?isMember=false&email={email}")
+                return HttpResponseRedirect(f"http://localhost:3000/login/redirection?isMember=false&email={email}")
                 # return HttpResponseRedirect(f"http://192.168.1.16:3000/login/redirection?isMember=false&email={email}")
-                return HttpResponseRedirect(f"https://www.mombo.site/login/redirection?isMember=false&email={email}")
+                # return HttpResponseRedirect(f"https://www.mombo.site/login/redirection?isMember=false&email={email}")
 
 
 class Join(APIView):
