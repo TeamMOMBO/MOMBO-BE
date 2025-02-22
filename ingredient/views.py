@@ -273,15 +273,16 @@ class AnalysisDetail(APIView):
     @extend_schema(
     summary="성분 분석 결과를 가져오는 API",
     description="성분 분석 결과 API에 대한 설명입니다. 성분 분석 결과를 전달합니다.",
-    parameters=[],
+    parameters=[
+        OpenApiParameter(
+            name='uarNo', 
+            description="UAR No", 
+            required=True, 
+            type=int,
+        ),
+    ],
     tags=["Ingredient"],
     responses=UserAnalysisResultSerializer,
-    request=inline_serializer(
-        name="IngredientDetail",
-        fields={
-            "uarNo": serializers.IntegerField(required=True),  # 필수로 설정
-        },
-    ),
     examples=[
         OpenApiExample(
             response_only=True,
@@ -333,14 +334,15 @@ class AnalysisDetail(APIView):
         ),
     ],
     )
-    def post(self, request):
+    def get(self, request):
 
         try:
             user = request.user
         except AttributeError:
             return Response({"error": "유저를 찾을 수 없습니다."}, status=status.HTTP_401_UNAUTHORIZED)
 
-        uar_id = request.data.get('uarNo')
+        # sort와 page 파라미터 받기
+        uar_id = request.GET.get('uarNo')
 
         if not uar_id:
             return Response({"error": "UAR 번호가 제공되지 않았습니다."}, status=status.HTTP_400_BAD_REQUEST)

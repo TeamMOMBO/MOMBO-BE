@@ -7,5 +7,5 @@ urlpatterns = [
     path('analysis/', IngredientAnalysis.as_view(), name='ingredient'),
     path('upload/', IngredientUploadAPIView.as_view(), name='ingredient-upload'),
     path('dictionary/', Dictionary.as_view(), name='ingredient-dictionary'),
-    path('analysis/detil', AnalysisDetail.as_view(), name='analysis-detail'),
+    path('analysis/detail', AnalysisDetail.as_view(), name='analysis-detail'),
 ]
